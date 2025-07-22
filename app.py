@@ -67,7 +67,4 @@ if uploads is not None:
             
         st.write(coords)
 
-
-# Use o comando streamlit run app.py para rodar o script
-
 print("rodando...")
