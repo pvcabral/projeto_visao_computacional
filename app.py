@@ -5,9 +5,10 @@ import streamlit as st
 
 
 
-def get_rectangle_coords(
-    points: tuple[tuple[int, int], tuple[int, int]],
-) -> tuple[int, int, int, int]:
+def get_rectangle_coords( points: tuple[tuple[int, int], tuple[int, int]]) -> tuple[int, int, int, int]:
+    """
+        Função com as coordenadas da Bounding Boxe
+    """
     point1, point2 = points
     minx = min(point1[0], point2[0])
     miny = min(point1[1], point2[1])
@@ -23,19 +24,30 @@ def get_rectangle_coords(
 st.set_page_config(layout="wide")
 
 st.title("App simples")
-uploads = st.file_uploader("Escolha um PDF", type="pdf")
 
-if uploads is not None: 
+# Entrada do PDF
+uploaded_file = st.file_uploader("Escolha um PDF", type="pdf")
+
+# Pré-processamento
+
+if uploaded_file is not None: 
+
     st.success("PDF carregado! Processando...")
-    content = uploads.read()
-    images = convert_from_bytes(content)
+
+    bytes_data = uploaded_file.getvalue()
+
+    # retorna uma uma lista de objetos (Pillow Image)
+    images = convert_from_bytes(bytes_data)
+   
     st.subheader("Página do PDF convertidas para imagens:")
 
     if images: 
         if "coordinates" not in st.session_state:
             st.session_state["coordinates"] = None
+
         img = images[0]
         draw = ImageDraw.Draw(img)
+
         if st.session_state["coordinates"]:
             coords = get_rectangle_coords(st.session_state["coordinates"])
             draw.rectangle(coords, fill=None, outline="green", width=2)
@@ -56,15 +68,15 @@ if uploads is not None:
             st.session_state["coordinates"] = (point1, point2)
             st.rerun()
         
-        if st.session_state["coordinates"]:
-            coords = get_rectangle_coords(st.session_state["coordinates"])
-            new_image = img.crop(coords)
-            new_image = new_image.resize(
-                (int(new_image.width * 1.5), int(new_image.height * 1.5))
-            )
-            with cols[1]:
-                st.image(new_image, use_container_width=True)
+        # if st.session_state["coordinates"]:
+        #     coords = get_rectangle_coords(st.session_state["coordinates"])
+        #     new_image = img.crop(coords)
+        #     new_image = new_image.resize(
+        #         (int(new_image.width * 1.5), int(new_image.height * 1.5))
+        #     )
+            # with cols[1]:
+            #     st.image(new_image, use_container_width=True)
             
-        st.write(coords)
+        # st.write(coords)
 
 print("rodando...")
