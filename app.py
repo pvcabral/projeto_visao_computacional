@@ -93,7 +93,7 @@ if uploaded_file is not None:
             # *** Inserção para salvar campos ***
             st.write("📌 Coordenadas:", coords)
 
-            drawing_title_text = pytesseract.image_to_string(new_image, lang="eng").strip()
+            drawing_title_text = pytesseract.image_to_string(new_image).strip()
             st.write("🔍 Texto extraído:", drawing_title_text)
 
             nome_campo = st.text_input("Nome do campo", key="nome_campo_input")
